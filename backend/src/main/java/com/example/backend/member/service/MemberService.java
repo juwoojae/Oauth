@@ -1,6 +1,7 @@
 package com.example.backend.member.service;
 
 import com.example.backend.member.domain.Member;
+import com.example.backend.member.domain.SocialType;
 import com.example.backend.member.dto.MemberCreateDto;
 import com.example.backend.member.dto.MemberLoginDto;
 import com.example.backend.member.repository.MemberRepository;
@@ -40,6 +41,27 @@ public class MemberService {
         if(!passwordEncoder.matches(memberLoginDto.getPassword(), member.getPassword())){
             throw new IllegalArgumentException("password가 일치하지 않습니다.");
         }
+        return member;
+    }
+
+    /**
+     * DB 에 해당 socialId 를 가진 member 가 존재하는지 탐색하기
+     */
+    public Member getMemberBySocialId(String socialId) {
+        Member member = memberRepository.findBySocialId(socialId).orElse(null);
+        return member;
+    }
+
+    /**
+     * 소셜 로그인으로 들어왔을때 회원가입
+     */
+    public Member createOauth(String socialId, String email, SocialType socialType) {
+        Member member = Member.builder()
+                .email(email)
+                .socialType(socialType)
+                .socialId(socialId)
+                .build();
+        memberRepository.save(member);
         return member;
     }
 }
