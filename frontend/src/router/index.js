@@ -11,6 +11,10 @@ const routes = [
     {
         path: '/member/login',
         component: MemberLogin
+    },
+    {
+        path: '/oauth/google/redirect',
+        component:
     }
 ]
 // localhost:3000/member/create 으로 라우팅 된다.

@@ -27,7 +27,7 @@
                 <img
                     src="@/assets/google_login.png"
                     style="max-height:40px; width:auto;"
-                    @click="googleServerLogin()"
+                    @click="googleLogin()"
                 />
               </v-col>
               <v-col cols="6" class="d-flex justify-center">
@@ -52,7 +52,13 @@ export default{
   data(){
     return{
       email : "",
-      password: ""
+      password: "",
+      googleUrl: "https://accounts.google.com/o/oauth2/auth",
+      googleClientId: "317175762620-t2bimu2pddtfqu9ko745h6ifraq1hd8r.apps.googleusercontent.com",
+      googleRedirectUrl: "http://localhost:3000/oauth/google/redirect",
+      // openid 는 요청하지 않아도 기본적으로 제공. email과 profile은 요청시 제공.
+      googleScope:"openid email profile"
+
     }
   },
   methods:{
@@ -66,14 +72,12 @@ export default{
         localStorage.setItem("token", token); //토큰 저장하기
         window.location.href = "/";
     },
+
     googleLogin(){
       const auth_uri = `${this.googleUrl}?client_id=${this.googleClientId}&redirect_uri=${this.googleRedirectUrl}&response_type=code&scope=${this.googleScope}`;
       window.location.href = auth_uri;
     },
     kakaoLogin(){
-    },
-
-    googleServerLogin(){
     }
   }
 }
