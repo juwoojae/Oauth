@@ -16,5 +16,10 @@ spring:
 
 jwt:
   #  chatserversecretaccesstokenchatserversecretaccesstokenchatserversecretaccesstoken
-  secret: Y2hhdHNlcnZlcnNlY3JldGFjY2Vzc3Rva2VuY2hhdHNlcnZlcnNlY3JldGFjY2Vzc3Rva2VuY2hhdHNlcnZlcnNlY3JldGFjY2Vzc3Rva2Vu
+  secret: ${SECRET_KEY}
   expiration: 3000 # 3000?
+oauth2:
+      google:
+        client-id: ${GOOGLE_CLIENT_ID}
+        client-secret: ${GOOGLE_CLIENT_SECRET}
+        redirect-uri: http://localhost:3000/oauth/google/redirect
