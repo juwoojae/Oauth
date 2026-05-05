@@ -5,6 +5,7 @@ import com.example.backend.member.domain.Member;
 import com.example.backend.member.domain.SocialType;
 import com.example.backend.member.dto.*;
 import com.example.backend.member.service.GoogleService;
+import com.example.backend.member.service.KakaoService;
 import com.example.backend.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,13 @@ public class MemberController {
 
     private final GoogleService googleService;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider, GoogleService googleService) {
+    private final KakaoService kakaoService;
+
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider, GoogleService googleService, KakaoService kakaoService) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.googleService = googleService;
+        this.kakaoService = kakaoService;
     }
 
     @PostMapping("/create")
@@ -65,6 +69,23 @@ public class MemberController {
         }
         //회원가입되어 있는 회원이라면 토큰 발급
         String jwtToken = jwtTokenProvider.createToken(originalMember.getEmail(), originalMember.getRole().toString());
+        Map<String, Object> loginInfo = new HashMap<>();
+        loginInfo.put("id", originalMember.getId());
+        loginInfo.put("token", jwtToken);
+        return new ResponseEntity<>(loginInfo, HttpStatus.OK);
+    }
+
+    @PostMapping("/kakao/doLogin")
+    public ResponseEntity<?> kakaoLogin(@RequestBody RedirectDto redirectDto){
+
+        AccessTokenDto accessTokenDto = kakaoService.getAccessToken(redirectDto.getCode());
+        KakaoProfileDto kakaoProfileDto  = kakaoService.getKakaoProfile(accessTokenDto.getAccess_token());
+        Member originalMember = memberService.getMemberBySocialId(kakaoProfileDto.getId());
+        if(originalMember == null){
+            originalMember = memberService.createOauth(kakaoProfileDto.getId(), kakaoProfileDto.getKakao_account().getEmail(), SocialType.KAKAO);
+        }
+        String jwtToken = jwtTokenProvider.createToken(originalMember.getEmail(), originalMember.getRole().toString());
+
         Map<String, Object> loginInfo = new HashMap<>();
         loginInfo.put("id", originalMember.getId());
         loginInfo.put("token", jwtToken);

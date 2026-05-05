@@ -46,8 +46,8 @@ public class SecurityConfig {
                         ,"/swagger-ui.html"
                         ,"/member/create"
                         ,"/member/doLogin"
-                        , "/member/google/doLogin"
-                        , "/member/kakao/doLogin"
+                        , "/member/google/doLogin/**"
+                        , "/member/kakao/doLogin/**"
                         , "/oauth2/**").permitAll().anyRequest().authenticated())
 //                UsernamePasswordAuthenticationFilter 이 클래스에서 폼로그인 인증을 처리
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
