@@ -48,6 +48,7 @@ public class GoogleService {
                   .toEntity(AccessTokenDto.class);
 
         System.out.println("응답 json" + response.getBody());
+
         return response.getBody();
     }
 
@@ -55,7 +56,14 @@ public class GoogleService {
      * 엑세스 토큰으로 구글에서 클라이언트 프로필 받아오기
      */
     public GoogleProfileDto getGoogleProfile(String token){
-        System.out.println("token:"+token);
-        return null;
+        RestClient restClient = RestClient.create();
+        ResponseEntity<GoogleProfileDto> response =  restClient.get()
+                .uri("https://openidconnect.googleapis.com/v1/userinfo")
+                .header("Authorization", "Bearer "+token)
+                .retrieve()
+                .toEntity(GoogleProfileDto.class);
+        System.out.println("profile JSON" + response.getBody());
+
+        return response.getBody();
     }
 }

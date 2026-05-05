@@ -61,7 +61,7 @@ public class MemberController {
         //회원가입이 되어 있지 않다면 회원
         Member originalMember = memberService.getMemberBySocialId(googleProfileDto.getSub());
         if(originalMember==null){
-            memberService.createOauth(googleProfileDto.getSub(), googleProfileDto.getEmail(), SocialType.Google);
+            originalMember = memberService.createOauth(googleProfileDto.getSub(), googleProfileDto.getEmail(), SocialType.Google);
         }
         //회원가입되어 있는 회원이라면 토큰 발급
         String jwtToken = jwtTokenProvider.createToken(originalMember.getEmail(), originalMember.getRole().toString());
